@@ -11,7 +11,7 @@ describe('MovieListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MovieListComponent],
       providers: [
-				provideMockStore({ initialState: { movies: [] } }),
+				provideMockStore({ initialState: { movies: { movies: [] } } }),
         provideExperimentalZonelessChangeDetection()
       ]
     }).compileComponents();

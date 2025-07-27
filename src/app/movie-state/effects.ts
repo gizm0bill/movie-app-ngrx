@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { loadMovies, loadMoviesFailure, loadMoviesSuccess } from "./actions";
-import { catchError, map, mergeMap, of, shareReplay, zip } from "rxjs";
+import { loadMovieDetails, loadMovieDetailsFailure, loadMovieDetailsSuccess, loadMovies, loadMoviesFailure, loadMoviesSuccess } from "./actions";
+import { catchError, map, mergeMap, of, shareReplay, switchMap, zip } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { ENV } from "../../environment/provider";
 import { Movie } from "../movie.model";
@@ -30,6 +30,34 @@ export class MoviesEffects {
             }))
         })),
         catchError(error => of(loadMoviesFailure({ error })))
+      )
+    )
+  ));
+  loadMovieDetails$ = createEffect(() => this.#actions$.pipe(
+    ofType(loadMovieDetails),
+    switchMap(({ id }) =>
+      this.#http.get<{ imdb_id: string }>(`${this.#env.apiUrl}/movie/${id}/external_ids`).pipe(
+        switchMap(externalIds => {
+          const externalId = externalIds.imdb_id;
+          return zip(
+            this.#http.get<{ movie_results: Movie[] }>(`${this.#env.apiUrl}/find/${externalId}`, {
+              params: {
+                external_source: 'imdb_id'
+              }
+            }),
+            this.#genresRequest
+          ).pipe(
+            map(([movie, genres]) => loadMovieDetailsSuccess({
+              movie: {
+                ...movie.movie_results[0],
+                genres: movie.movie_results[0].genre_ids
+                  .map(genreId => genres.genres.find(genre => genre.id === genreId)?.name)
+                .filter((name): name is string => typeof name === 'string'),
+              }
+            })),
+          )
+        }),
+        catchError(error => of(loadMovieDetailsFailure({ error })))
       )
     )
   ));

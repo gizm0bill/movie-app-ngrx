@@ -1,29 +1,34 @@
 import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from './app.state';
-import { loadMovies, selectMovie } from './movie-state/actions';
-import { selectMovies } from './movie-state/selectors';
-import { Movie } from './movie.model';
-import { MovieListComponent } from './movie-list.component';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { loadMovies } from './movie-state/actions';
+import { selectMoviesError, selectMoviesLoading } from './movie-state/selectors';
 
 @Component({
   selector: 'app-root',
-  imports: [ MovieListComponent ],
+  imports: [RouterOutlet, RouterLink],
   template: `
-    <h1>Movie App</h1>
-    <movie-list [movies]="movies()" (select)="onSelect($event)" />
+    <header>
+      <h1 [routerLink]="['/']">Movie App</h1>
+      @if (loading()) {
+        <div class="spinner"></div>
+      }
+    </header>
+    <main>
+      @if (errored()) {
+        <p>Error loading movies please refresh...</p>
+      }
+      <router-outlet />
+    </main>
   `,
-  styleUrl: './app.css'
 })
 export class App {
   readonly #store = inject( Store<AppState> );
-  movies = toSignal( this.#store.select(selectMovies) );
+  loading = toSignal(this.#store.select( selectMoviesLoading ));
+  errored = toSignal(this.#store.select( selectMoviesError ));
   ngOnInit() {
     this.#store.dispatch(loadMovies());
-  }
-
-  onSelect(movie: Movie) {
-    this.#store.dispatch(selectMovie({ movieId: movie.id }));
   }
 }

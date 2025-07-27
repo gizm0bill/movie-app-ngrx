@@ -1,32 +1,32 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.state';
+import { selectMovies } from './movie-state/selectors';
 import { Movie } from './movie.model';
-import { JsonPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component( {
-  selector: 'movie-list',
-  imports: [ JsonPipe ],
+  selector: 'section.movie-list',
+  imports: [ RouterLink ],
   template: `
-    <h1>Movie List</h1>
-    <section>
     @for ( movie of movies(); track movie.id ) {
-      <article>
+      <article [routerLink]="['/movies', movie.id]">
         <h2>{{movie.title}}</h2>
         <p>{{movie.release_date}}</p>
-        @if ( movie.backdrop_path ) {
-          <img [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" alt="{{movie.title}}" />
+        @if ( movie.poster_path ) {
+          <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="{{movie.title}}" />
         }
         <ul>
           @for ( genre of movie.genres; track genre ) {
             <li>{{genre}}</li>
           }
         </ul>
-        <button (click)="select.emit(movie)">Select</button>
       </article>
     }
-    </section>
   `,
 } )
 export class MovieListComponent {
-  movies = input<Movie[]>([]);
-  select = output<Movie>();
+  readonly #store = inject( Store<AppState> );
+  movies = toSignal( this.#store.select(selectMovies) );
 }
