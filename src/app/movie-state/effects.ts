@@ -35,7 +35,7 @@ export class MoviesEffects {
   ));
   loadMovieDetails$ = createEffect(() => this.#actions$.pipe(
     ofType(loadMovieDetails),
-    mergeMap(({ id }) =>
+    switchMap(({ id }) =>
       this.#http.get<{ imdb_id: string }>(`${this.#env.apiUrl}/movie/${id}/external_ids`).pipe(
         switchMap(externalIds => {
           const externalId = externalIds.imdb_id;
