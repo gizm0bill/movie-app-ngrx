@@ -79,7 +79,7 @@ section {
         background-color: rgba(0, 0, 0, 0.5);
       }
       ul {
-        display: flex;;
+        display: flex;
       }
       li + li  {
         margin-inline-start: 1rem;
