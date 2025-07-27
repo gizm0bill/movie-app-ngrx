@@ -14,7 +14,8 @@ import { reducers } from './app.state';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
-    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideRouter(routes),
+    provideClientHydration(withEventReplay()),
     provideHttpClient( withFetch(), withInterceptors([tmdbAuthInterceptor]) ),
     provideStore( reducers ),
     provideEffects(MoviesEffects),
