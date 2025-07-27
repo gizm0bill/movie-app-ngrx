@@ -12,7 +12,7 @@ export class MoviesEffects {
   readonly #http = inject( HttpClient );
   readonly #env = inject( ENV );
   readonly #genresRequest = this.#http.get<{ genres: { id: number; name: string }[] }>(`${this.#env.apiUrl}/genre/movie/list?language=en-US`).pipe(
-    shareReplay()
+    shareReplay({ bufferSize: 1, refCount: true })
   );
   loadMovies$ = createEffect(() => this.#actions$.pipe(
     ofType(loadMovies),
