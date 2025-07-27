@@ -46,7 +46,7 @@ jobs:
         run: npm ci
 
       - name: Replace environment variables
-        run: sed -i "s|__API_KEY__|${{ secrets.API_KEY }}|g" src/environments/environment.prod.ts
+        run: sed -i "s|__API_KEY__|${{ secrets.API_KEY }}|g" src/environment.ts
 
       - name: Build Angular (prod)
         run: npx ng build --configuration production
