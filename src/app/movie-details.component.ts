@@ -9,7 +9,8 @@ import { selectSelectedMovieDetails } from './movie-state/selectors';
 @Component( {
   selector: 'section.movie-details',
   template: `
-     <article [style.backgroundImage]="movie()?.backdrop_path ? 'url(https://image.tmdb.org/t/p/w500' + movie()?.backdrop_path + ')' : ''">
+    @if ( movie() ) {
+      <article [style.backgroundImage]="movie()?.backdrop_path ? 'url(https://image.tmdb.org/t/p/w500' + movie()?.backdrop_path + ')' : ''">
         <h2>{{movie()?.title}}</h2>
         <p>{{movie()?.release_date}}</p>
         @if ( movie()?.poster_path ) {
@@ -22,6 +23,7 @@ import { selectSelectedMovieDetails } from './movie-state/selectors';
           }
         </ul>
       </article>
+    }
     `
 } )
 export class MovieDetailsComponent implements OnDestroy {

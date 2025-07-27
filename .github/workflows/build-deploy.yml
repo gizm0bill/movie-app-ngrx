@@ -7,7 +7,7 @@ on:
 
 env:
   NODE_VERSION: 20
-  PROJECT_NAME: viabill
+  PROJECT_NAME: movie-app-ngrx
 
 jobs:
 

@@ -29,7 +29,9 @@ a {
 }
 h1 {
   margin-block: 2rem;
-  margin-inline: 1rem;
+  margin-inline: .5rem;
+  flex: 0 0 auto;
+  cursor: pointer;
 }
 section {
   max-width: 64rem;
@@ -92,10 +94,6 @@ header {
   display: flex;
   flex-direction: row;
   padding: 1rem;
-}
-
-h1 {
-  flex: 1
 }
 
 .spinner {
