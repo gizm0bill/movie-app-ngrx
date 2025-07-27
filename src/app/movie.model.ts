@@ -1,9 +1,10 @@
 export interface Movie {
   id: number;
   title: string;
-  releaseDate: Date;
-  genre: string;
-  director: string;
-  rating: number;
-  description?: string; // Optional field for movie description
+  release_date: Date;
+  overview: string;
+  genre_ids: number[];
+  genres?: string[];
+  vote_average: number;
+  backdrop_path?: string;
 }

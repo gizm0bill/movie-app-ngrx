@@ -1,20 +1,34 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { loadMovies, loadMoviesFailure, loadMoviesSuccess } from "./actions";
-import { catchError, map, mergeMap, of } from "rxjs";
+import { catchError, map, mergeMap, of, shareReplay, zip } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { ENV } from "../../environment/provider";
+import { Movie } from "../movie.model";
 
 @Injectable()
 export class MoviesEffects {
   readonly #actions$ = inject( Actions );
   readonly #http = inject( HttpClient );
   readonly #env = inject( ENV );
+  readonly #genresRequest = this.#http.get<{ genres: { id: number; name: string }[] }>(`${this.#env.apiUrl}/genre/movie/list?language=en-US`).pipe(
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
   loadMovies$ = createEffect(() => this.#actions$.pipe(
     ofType(loadMovies),
-    mergeMap(() => this.#http.get<any /*MovieResponse*/>(`${this.#env.apiUrl}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc?api_key=${this.#env.apiKey}`)
-      .pipe(
-        map(response => loadMoviesSuccess({ movies: response.results })),
+    mergeMap(() => zip(
+      this.#http.get<{ results: Movie[] }>(`${this.#env.apiUrl}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`),
+      this.#genresRequest
+    ).pipe(
+        map(([movies, genres]) => loadMoviesSuccess({
+          movies: movies.results.map( movie =>
+            ({
+              ...movie,
+              genres: movie.genre_ids
+                .map(genreId => genres.genres.find(genre => genre.id === genreId)?.name)
+                .filter((name): name is string => typeof name === 'string'),
+            }))
+        })),
         catchError(error => of(loadMoviesFailure({ error })))
       )
     )

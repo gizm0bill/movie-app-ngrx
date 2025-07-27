@@ -9,14 +9,15 @@ import { moviesReducer } from './movie-state/reducer';
 import { MoviesEffects } from './movie-state/effects';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { tmdbAuthInterceptor } from './api.interceptor';
+import { reducers } from './app.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
     provideRouter(routes), provideClientHydration(withEventReplay()),
     provideHttpClient( withFetch(), withInterceptors([tmdbAuthInterceptor]) ),
-    provideStore(),
+    provideStore( reducers ),
     provideEffects(MoviesEffects),
-    provideState({ name: 'movie', reducer: moviesReducer })
+    provideState({ name: 'movies', reducer: moviesReducer })
 ]
 };
