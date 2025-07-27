@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "viabill": {
+    "movie-app-ngrx": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -14,7 +14,7 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "dist/viabill"
+              "base": "dist/movie-app-ngrx"
             },
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "viabill:build:production"
+              "buildTarget": "movie-app-ngrx:build:production"
             },
             "development": {
-              "buildTarget": "viabill:build:development"
+              "buildTarget": "movie-app-ngrx:build:development"
             }
           },
           "defaultConfiguration": "development"
