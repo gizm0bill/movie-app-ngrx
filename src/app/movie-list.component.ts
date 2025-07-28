@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from './app.state';
@@ -25,6 +25,7 @@ import { RouterLink } from '@angular/router';
       </article>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 } )
 export class MovieListComponent {
   readonly #store = inject( Store<AppState> );

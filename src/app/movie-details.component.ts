@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -23,8 +23,8 @@ import { selectSelectedMovieDetails } from './movie-state/selectors';
           }
         </ul>
       </article>
-    }
-    `
+    }`,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 } )
 export class MovieDetailsComponent implements OnDestroy {
   readonly #store = inject( Store<AppState> );
